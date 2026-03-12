@@ -23,6 +23,9 @@ def target_model_verify(target_model: torch.nn.Module,
             if tokenizer:
                 draft_text = tokenizer.decode([draft.item()], skip_special_tokens=True)
                 target_text = tokenizer.decode([targets[i].item()], skip_special_tokens=True)
+            else:
+                draft_text = str(draft.item())
+                target_text = str(targets[i].item())
             if draft == targets[i]:
                 verify_drafts.append(draft.item())
                 logger.info(f'the {i+1}-th draft token "{draft_text}" is correct.')
