@@ -4,3 +4,4 @@ venv_sd/
 *.ipynb
 *.pyc
 test/
+logs/
