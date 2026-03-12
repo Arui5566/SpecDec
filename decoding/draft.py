@@ -1,5 +1,4 @@
 import torch
-from config import eos_tokens_id
 from utils import Logger
 import time
 
@@ -8,6 +7,7 @@ logger = Logger("DraftModel")
 def draft_model_generate(draft_model: torch.nn.Module,
                          input_ids: torch.Tensor,
                          tokenizer = None,
+                         eos_tokens_id: int = None,
                          k: int = 5,
                          )-> torch.Tensor:
     """
@@ -43,7 +43,7 @@ def draft_model_generate(draft_model: torch.nn.Module,
         if tokenizer and draft:
             draft_text = tokenizer.decode(draft, skip_special_tokens=True)
             logger.info(f"Draft generated: {draft_text}")
-            
+
         logger.info(f"Draft generation completed : {end_time - start_time:.2f} seconds.")
     
     return torch.tensor(draft, device=input_ids.device)
