@@ -24,20 +24,35 @@ def draft_model_generate(draft_model: torch.nn.Module,
 
     """
     draft = []
+    past_key_values = None
 
     with torch.no_grad():
         start_time = time.time()
-        for _ in range(k):
-            logits = draft_model(input_ids).logits
-            pre_token_id = logits[0,-1].argmax().item()
-            draft.append(pre_token_id)
 
-            if pre_token_id == eos_tokens_id:
-                logger.info("End of sequence token generated. Stopping draft generation.")
-                break
+        outputs = draft_model(input_ids, use_cache=True)
+        past_key_values = outputs.past_key_values
+        pre_token_id = outputs.logits[0, -1].argmax().item()
+        draft.append(pre_token_id)
 
-            next_token = torch.tensor([[pre_token_id]], device=input_ids.device)
-            input_ids = torch.cat([input_ids, next_token], dim=-1)
+        if pre_token_id == eos_tokens_id:
+            logger.info("End of sequence token generated. Stopping draft generation.")
+        else:
+            for _ in range(k - 1):
+                next_token = torch.tensor([[pre_token_id]], device=input_ids.device)
+
+                outputs = draft_model(
+                    next_token,
+                    use_cache=True,
+                    past_key_values=past_key_values
+                )
+                past_key_values = outputs.past_key_values
+                pre_token_id = outputs.logits[0, -1].argmax().item()
+                draft.append(pre_token_id)
+
+                if pre_token_id == eos_tokens_id:
+                    logger.info("End of sequence token generated. Stopping draft generation.")
+                    break
+
         end_time = time.time()
 
         if tokenizer and draft:
