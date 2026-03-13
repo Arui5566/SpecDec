@@ -43,6 +43,7 @@ def target_model_verify(target_model: torch.nn.Module,
                 logger.info(f'All drafts are correct. Bonus token "{target_text}" added.')
 
         end_time = time.time()
-        logger.info(f"Verification completed : {end_time - start_time:.2f} seconds\n")
+        logger.info(f"Verification completed : {end_time - start_time:.2f} seconds")
+        logger.info(f"Tokens verification rate : {len(verify_drafts)/(end_time - start_time):.2f} t/s.")
         
     return torch.tensor(verify_drafts, device=input_data.device)    

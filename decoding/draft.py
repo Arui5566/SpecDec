@@ -60,5 +60,6 @@ def draft_model_generate(draft_model: torch.nn.Module,
             logger.info(f"Draft generated: {draft_text}")
 
         logger.info(f"Draft generation completed : {end_time - start_time:.2f} seconds.")
+        logger.info(f"Token generation rate : {k/(end_time - start_time):.2f} t/s.")
     
     return torch.tensor(draft, device=input_ids.device)
