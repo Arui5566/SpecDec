@@ -16,12 +16,12 @@ def main():
     # Load models
     draft_model = AutoModelForCausalLM.from_pretrained(
         draft_model_name,
-        torch_dtype="auto",
+        dtype="auto",
         device_map="auto",
     )
     target_model = AutoModelForCausalLM.from_pretrained(
         target_model_name,
-        torch_dtype="auto",
+        dtype="auto",
         device_map="auto",
     )
 
